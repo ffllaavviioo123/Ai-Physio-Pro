@@ -1,6 +1,15 @@
 import React from 'react';
 
-const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  onCtaClick: () => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onCtaClick }) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onCtaClick();
+  };
+
   return (
     <section className="relative text-white py-32 sm:py-40 lg:py-48 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-brand-primary-start to-brand-primary-end opacity-20"></div>
@@ -17,13 +26,14 @@ const HeroSection: React.FC = () => {
         <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
           Relatórios precisos e detalhados em segundos. Desenvolvido por profissionais, para profissionais da saúde e movimento.
         </p>
-        <form className="mt-8 max-w-xl mx-auto" onSubmit={(e) => e.preventDefault()}>
+        <form className="mt-8 max-w-xl mx-auto" onSubmit={handleSubmit}>
             <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <input
                     type="email"
-                    placeholder="Seu melhor email"
-                    required
-                    className="w-full sm:w-auto flex-grow px-6 py-4 bg-brand-secondary/50 border border-brand-secondary rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary-start transition-all duration-300"
+                    placeholder="Seu melhor email para começar"
+                    onClick={onCtaClick}
+                    readOnly
+                    className="w-full sm:w-auto flex-grow px-6 py-4 bg-brand-secondary/50 border border-brand-secondary rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary-start transition-all duration-300 cursor-pointer"
                     aria-label="Email para cadastro"
                 />
                 <button

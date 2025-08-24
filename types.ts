@@ -39,3 +39,9 @@ export interface FaqItem {
   question: string;
   answer: string;
 }
+
+export interface User {
+  name: string;
+  email: string;
+  plan: 'free' | 'basic' | 'professional' | 'unlimited';
+}

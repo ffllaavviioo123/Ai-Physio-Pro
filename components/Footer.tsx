@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
             <div>
               <h2 className="mb-4 text-sm font-semibold text-gray-200 uppercase">Contato</h2>
               <ul className="text-gray-400">
-                <li className="mb-2"><a href="mailto:suporte@gaitanalyzer.pro" className="hover:text-white transition-colors">suporte@aiphysio.pro</a></li>
+                <li className="mb-2"><a href="mailto:suporte@aiphysio.pro" className="hover:text-white transition-colors">suporte@aiphysio.pro</a></li>
               </ul>
             </div>
           </div>

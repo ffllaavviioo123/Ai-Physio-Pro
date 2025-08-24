@@ -1,9 +1,13 @@
-
 import React from 'react';
 import { PRICING_PLANS } from '../constants';
 import { CheckCircleIcon } from './icons';
+import { PlanTier } from '../types';
 
-const Pricing: React.FC = () => {
+interface PricingProps {
+  onPlanSelect: () => void;
+}
+
+const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
   return (
     <div className="container mx-auto px-6">
       <div className="text-center mb-16">
@@ -14,7 +18,7 @@ const Pricing: React.FC = () => {
           Escolha o plano que melhor se adapta às suas necessidades e comece a analisar hoje mesmo.
         </p>
       </div>
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8 items-stretch">
         {PRICING_PLANS.map((plan) => (
           <div
             key={plan.tier}
@@ -43,8 +47,8 @@ const Pricing: React.FC = () => {
                 </li>
               ))}
             </ul>
-            <a
-              href="#"
+            <button
+              onClick={onPlanSelect}
               className={`w-full mt-8 py-3 px-6 text-center rounded-lg font-semibold transition-all duration-300 ${
                 plan.isFeatured
                   ? 'bg-gradient-to-r from-brand-primary-start to-brand-primary-end text-white hover:opacity-90'
@@ -52,7 +56,7 @@ const Pricing: React.FC = () => {
               }`}
             >
               Escolher Plano
-            </a>
+            </button>
           </div>
         ))}
       </div>
