@@ -1,46 +1,589 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Physio Pro - Análise de Movimento por IA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              'brand-primary-start': '#667eea',
-              'brand-primary-end': '#764ba2',
-              'brand-dark': '#1a202c',
-              'brand-light': '#f7fafc',
-              'brand-secondary': '#2d3748',
-            },
-            animation: {
-              'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-            },
-            keyframes: {
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-            },
-          },
-        },
-      }
-    </script>
-  <script type="importmap">
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Physio Pro - Análise de Marcha com IA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .upload-area {
+            border: 3px dashed #4CAF50;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px 0;
+        }
+
+        .upload-area:hover {
+            background: #e8f5e8;
+            border-color: #45a049;
+        }
+
+        .upload-area.dragover {
+            background: #e8f5e8;
+            border-color: #45a049;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e1e1e1;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .price-tag {
+            background: #ff4757;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .features {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .feature-item i {
+            color: #4CAF50;
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .video-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .file-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .success-message {
+            text-align: center;
+            color: #4CAF50;
+            padding: 20px;
+        }
+
+        .success-message i {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        /* Espaço para anúncios laterais em desktop */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px 200px; /* Espaço para anúncios laterais */
+            }
+        }
+
+        .ad-space {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
+            height: 600px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .ad-left {
+            left: 20px;
+        }
+
+        .ad-right {
+            right: 20px;
+        }
+
+        @media (min-width: 1200px) {
+            .ad-space {
+                display: flex;
+            }
+        }
+    </style>
+<script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@^19.1.1",
     "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
-    "react/": "https://esm.sh/react@^19.1.1/",
-    "react": "https://esm.sh/react@^19.1.1"
+    "react/": "https://esm.sh/react@^19.1.1/"
   }
 }
 </script>
 </head>
-  <body class="bg-brand-dark text-brand-light">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+<body>
+    <!-- Espaços para anúncios -->
+    <div class="ad-space ad-left">
+        <div>
+            <i class="fas fa-ad"></i><br>
+            Espaço para<br>
+            Anúncio
+        </div>
+    </div>
+    <div class="ad-space ad-right">
+        <div>
+            <i class="fas fa-ad"></i><br>
+            Espaço para<br>
+            Anúncio
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏃‍♂️</div>
+            <h1>AI Physio Pro</h1>
+            <p>Análise de Marcha com Inteligência Artificial</p>
+        </div>
+
+        <div class="content">
+            <!-- Passo 1: Informações do Cliente -->
+            <div class="step active" id="step1">
+                <h2 style="margin-bottom: 20px; text-align: center;">Seus Dados</h2>
+                
+                <div class="form-group">
+                    <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">WhatsApp</label>
+                    <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="profissao">Profissão</label>
+                    <select id="profissao" required>
+                        <option value="">Selecione sua profissão</option>
+                        <option value="fisioterapeuta">Fisioterapeuta</option>
+                        <option value="educador_fisico">Educador Físico</option>
+                        <option value="medico">Médico</option>
+                        <option value="atleta">Atleta</option>
+                        <option value="treinador">Treinador</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="nextStep(2)">Continuar</button>
+            </div>
+
+            <!-- Passo 2: Upload do Vídeo -->
+            <div class="step" id="step2">
+                <h2 style="margin-bottom: 20px; text-align: center;">Upload do Vídeo</h2>
+                
+                <div class="price-tag">
+                    💰 Apenas R$ 49,90 por análise
+                </div>
+
+                <div class="features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Análise completa em até 24h</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Relatório detalhado em PDF</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Recomendações personalizadas</span>
+                    </div>
+                </div>
+
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('videoFile').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">Clique para enviar seu vídeo</div>
+                    <div class="upload-subtext">ou arraste e solte aqui</div>
+                    <div class="upload-subtext" style="margin-top: 10px;">
+                        <strong>Formatos aceitos:</strong> MP4, MOV, AVI<br>
+                        <strong>Tamanho máximo:</strong> 100MB
+                    </div>
+                </div>
+
+                <input type="file" id="videoFile" accept="video/*" style="display: none;" onchange="handleFileSelect(this)">
+                
+                <video class="video-preview" id="videoPreview" controls></video>
+                
+                <div class="file-info" id="fileInfo">
+                    <h4>Arquivo selecionado:</h4>
+                    <p id="fileName"></p>
+                    <p id="fileSize"></p>
+                </div>
+
+                <div class="progress-bar hidden" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <button class="btn" id="uploadBtn" onclick="processPayment()" disabled>
+                    Pagar R$ 49,90 e Enviar Análise
+                </button>
+
+                <button class="btn" onclick="nextStep(1)" style="background: #6c757d; margin-top: 10px;">
+                    Voltar
+                </button>
+            </div>
+
+            <!-- Passo 3: Confirmação -->
+            <div class="step" id="step3">
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h2>Análise Enviada com Sucesso!</h2>
+                    <p>Você receberá o relatório completo em até 24 horas no seu e-mail.</p>
+                    <p style="margin-top: 20px; font-weight: bold;">
+                        Número do pedido: #<span id="orderNumber"></span>
+                    </p>
+                </div>
+                
+                <button class="btn" onclick="location.reload()">
+                    Nova Análise
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedFile = null;
+        let userData = {};
+
+        function nextStep(step) {
+            if (step === 2) {
+                // Validar dados do passo 1
+                const nome = document.getElementById('nome').value;
+                const email = document.getElementById('email').value;
+                const telefone = document.getElementById('telefone').value;
+                const profissao = document.getElementById('profissao').value;
+
+                if (!nome || !email || !telefone || !profissao) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Salvar dados do usuário
+                userData = { nome, email, telefone, profissao };
+            }
+
+            // Esconder passo atual
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            // Mostrar próximo passo
+            currentStep = step;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+        }
+
+        // Configurar drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect({ files: files });
+            }
+        });
+
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Validar tipo de arquivo
+            if (!file.type.startsWith('video/')) {
+                alert('Por favor, selecione apenas arquivos de vídeo.');
+                return;
+            }
+
+            // Validar tamanho (100MB)
+            if (file.size > 100 * 1024 * 1024) {
+                alert('O arquivo é muito grande. Tamanho máximo: 100MB');
+                return;
+            }
+
+            selectedFile = file;
+
+            // Mostrar preview do vídeo
+            const videoPreview = document.getElementById('videoPreview');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            videoPreview.src = URL.createObjectURL(file);
+            videoPreview.style.display = 'block';
+
+            fileName.textContent = file.name;
+            fileSize.textContent = `Tamanho: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+            fileInfo.style.display = 'block';
+
+            uploadBtn.disabled = false;
+
+            // Atualizar área de upload
+            uploadArea.innerHTML = `
+                <div class="upload-icon">
+                    <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                </div>
+                <div class="upload-text">Vídeo selecionado com sucesso!</div>
+                <div class="upload-subtext">Clique para selecionar outro arquivo</div>
+            `;
+        }
+
+        function processPayment() {
+            if (!selectedFile) {
+                alert('Por favor, selecione um vídeo primeiro.');
+                return;
+            }
+
+            // Simular processamento de pagamento
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Processando pagamento...';
+            progressBar.classList.remove('hidden');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Simular upload do arquivo
+                    uploadBtn.textContent = 'Enviando vídeo...';
+                    
+                    setTimeout(() => {
+                        // Gerar número do pedido
+                        const orderNumber = Math.floor(Math.random() * 900000) + 100000;
+                        document.getElementById('orderNumber').textContent = orderNumber;
+                        
+                        // Salvar dados no localStorage (simulação)
+                        const analysisData = {
+                            ...userData,
+                            fileName: selectedFile.name,
+                            fileSize: selectedFile.size,
+                            orderNumber: orderNumber,
+                            timestamp: new Date().toISOString(),
+                            status: 'Em análise'
+                        };
+                        
+                        localStorage.setItem(`analysis_${orderNumber}`, JSON.stringify(analysisData));
+                        
+                        // Ir para o passo de confirmação
+                        nextStep(3);
+                        
+                        // Aqui você integraria com seu sistema de pagamento real
+                        // e enviaria o arquivo para processamento
+                        console.log('Dados da análise:', analysisData);
+                        
+                    }, 2000);
+                }
+            }, 200);
+        }
+
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    </script>
+</body>
 </html>
