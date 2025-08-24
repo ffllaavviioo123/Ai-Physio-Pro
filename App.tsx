@@ -9,7 +9,6 @@ import Footer from './components/Footer';
 import Modal from './components/Modal';
 import Dashboard from './components/Dashboard';
 import type { User } from './types';
-import { PlanTier } from './types';
 
 type AuthModalType = 'login' | 'signup' | null;
 
@@ -54,6 +53,7 @@ const App: React.FC = () => {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    // Simulate API call
     setTimeout(() => {
       handleAuthSuccess({ name: email.split('@')[0], email, plan: 'basic' });
     }, 1000);
@@ -62,6 +62,7 @@ const App: React.FC = () => {
   const handleSignupSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    // Simulate API call
     setTimeout(() => {
       handleAuthSuccess({ name, email, plan: 'free' });
     }, 1000);
@@ -69,7 +70,7 @@ const App: React.FC = () => {
 
   if (currentUser) {
     return (
-      <div className="bg-brand-dark min-h-screen font-sans">
+      <div className="bg-brand-dark min-h-screen font-sans text-gray-200">
         <Header isLoggedIn={true} onLogout={handleLogout} onOpenAuthModal={() => {}} />
         <main>
           <Dashboard user={currentUser} />
@@ -80,7 +81,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="bg-brand-dark min-h-screen font-sans">
+    <div className="bg-brand-dark min-h-screen font-sans text-gray-200">
       <Header isLoggedIn={false} onLogout={() => {}} onOpenAuthModal={setAuthModal} />
       <main>
         <HeroSection onCtaClick={() => setAuthModal('signup')} />

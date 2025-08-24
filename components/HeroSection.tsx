@@ -12,7 +12,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onCtaClick }) => {
 
   return (
     <section className="relative text-white py-32 sm:py-40 lg:py-48 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-brand-primary-start to-brand-primary-end opacity-20"></div>
        <div 
         className="absolute inset-0 bg-brand-dark"
         style={{

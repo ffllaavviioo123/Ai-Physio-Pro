@@ -13,6 +13,13 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenAuthModal }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const handleLinkClick = (action: () => void) => {
+    action();
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
   const loggedOutLinks = (
     <>
       {NAV_LINKS.map((link) => (
@@ -20,12 +27,12 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenAuthModal }
           {link.label}
         </a>
       ))}
-       <a href="#" onClick={() => { onOpenAuthModal('login'); isMenuOpen && setIsMenuOpen(false); }} className="text-gray-300 hover:text-white transition-colors duration-300">
+       <a href="#" onClick={() => handleLinkClick(() => onOpenAuthModal('login'))} className="text-gray-300 hover:text-white transition-colors duration-300">
         Login
       </a>
-       <a href="#pricing" onClick={() => { onOpenAuthModal('signup'); isMenuOpen && setIsMenuOpen(false); }} className="bg-gradient-to-r from-brand-primary-start to-brand-primary-end text-white font-bold py-2 px-4 rounded-full hover:opacity-90 transition-opacity duration-300">
+       <button onClick={() => handleLinkClick(() => onOpenAuthModal('signup'))} className="bg-gradient-to-r from-brand-primary-start to-brand-primary-end text-white font-bold py-2 px-4 rounded-full hover:opacity-90 transition-opacity duration-300">
         Começar Agora
-      </a>
+      </button>
     </>
   );
 
@@ -50,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenAuthModal }
           {isLoggedIn ? loggedInLinks : loggedOutLinks}
         </nav>
         <div className="md:hidden">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white">
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none" aria-label="Toggle menu">
             {isMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
           </button>
         </div>

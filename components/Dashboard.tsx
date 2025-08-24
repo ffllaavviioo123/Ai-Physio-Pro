@@ -18,6 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     return names[plan] || 'Gratuito';
   };
 
+  // Mock data for recent analyses
   const recentAnalyses = [
     { id: 1, patient: 'Paciente A', date: '24 de Ago, 2024', status: 'Concluída' },
     { id: 2, patient: 'Paciente B', date: '23 de Ago, 2024', status: 'Concluída' },
@@ -72,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </h3>
           <div className="space-y-4">
             {recentAnalyses.map(analysis => (
-              <div key={analysis.id} className="bg-brand-dark p-4 rounded-lg flex justify-between items-center">
+              <div key={analysis.id} className="bg-brand-dark p-4 rounded-lg flex justify-between items-center flex-wrap gap-2">
                 <div>
                   <p className="font-semibold">{analysis.patient}</p>
                   <p className="text-sm text-gray-400">{analysis.date}</p>

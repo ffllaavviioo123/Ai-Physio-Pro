@@ -1,6 +1,5 @@
 import type { NavLink, HowItWorksStep, Feature, PricingPlan, FaqItem } from './types';
 import { PlanTier } from './types';
-import React from 'react';
 import { CameraIcon, ChartBarIcon, DocumentTextIcon, CpuChipIcon, ShieldCheckIcon, RocketLaunchIcon, LockClosedIcon, UsersIcon, ChatBubbleLeftRightIcon } from './components/icons';
 
 export const NAV_LINKS: NavLink[] = [

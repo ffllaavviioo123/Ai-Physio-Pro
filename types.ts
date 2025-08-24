@@ -1,4 +1,4 @@
-import type { ReactNode, FC } from 'react';
+import type { FC } from 'react';
 
 export type IconComponent = FC<{ className?: string }>;
 

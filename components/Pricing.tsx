@@ -1,7 +1,6 @@
 import React from 'react';
 import { PRICING_PLANS } from '../constants';
 import { CheckCircleIcon } from './icons';
-import { PlanTier } from '../types';
 
 interface PricingProps {
   onPlanSelect: () => void;
@@ -38,7 +37,7 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
               <span className="text-4xl font-extrabold text-white">{plan.price}</span>
               {plan.period}
             </div>
-            <p className="mt-4 text-center font-semibold">{plan.analysisCount}</p>
+            <p className="mt-4 text-center font-semibold text-gray-300">{plan.analysisCount}</p>
             <ul className="mt-6 space-y-4 flex-grow">
               {plan.features.map((feature, index) => (
                 <li key={index} className="flex items-start">
